@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=big5" />
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
+    <script src="../scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="../scripts/jquery-1.11.1.min.js"></script>
+    <script src="../scripts/jquery-2.2.1.js"></script>
+    <link rel="stylesheet" href="../Content/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../Content/Site.css">
+    <script src="../Content/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jquery-form/form@4.2.2/dist/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="../scripts/index/renderer.js" charset="big5"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+    <script src="../scripts/webcam.js"></script>
+    <script src="../scripts/facedetection/camvas.js"></script>
+    <script src="../scripts/facedetection/pico.js"></script>
+    <script src="../scripts/facedetection/index.js"></script>
+    <script src="../scripts/facedetection/html2canvas.js"></script>
+    <title>打卡系統</title>
+    <style>
+        .el-carousel__item h3 {
+            color: #475669;
+            opacity: 0.75;
+            line-height: 200px;
+            margin: 0;
+        }
+
+        .el-carousel__item:nth-child(2n) {
+            background-color: #99a9bf;
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-color: #d3dce6;
+        }
+
+        #notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 200px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body style="width:100%">
+    <div id="clock">
+        <div v-if="!CheckUser" v-loading="loginDialog">
+            <el-form style="width:100%;flex:none">
+                <el-form-item label=" 帳號 : ">
+                    <el-input type="text" v-model="Account"></el-input>
+                </el-form-item>
+                <el-form-item label=" 密碼 : ">
+                    <el-input type="password" v-model="Password"></el-input>
+                </el-form-item>
+            </el-form>
+            <el-button type="primary" v-on:click="CheckUserExist">確定</el-button>
+        </div>
+
+        <div v-show="CheckUser" style="width:100%;height:100%;display:flex;flex-direction:column;margin:20px;margin-top:40px" v-loading="fullscreenLoading">
+            <input id="cerrier" type="password" autofocus style="position:absolute;top:-9999px" v-model="carrier" v-on:keyup.enter="addRecord()" />
+            <!--style="position:absolute;top:-9999px"-->
+
+            <div style="display:flex">
+                <el-form style="width:65%;display:inline-flex">
+                    <el-form-item style="display:inline-block; width:49%;vertical-align:middle;">
+                        <img style="width:90%;height:90%" src="../img/TestImg.png" />
+                    </el-form-item>
+                    <el-form-item style="display:inline-flex;align-items:center;width:49%;height:100%;vertical-align:middle;">
+                        <p :style="DateStyle">{{nowTime}}</p> <br /><br /> <p style="width:100%;font-size:10vmin;color:forestgreen;padding-left:10px">{{nowDate}}</p>
+                    </el-form-item>
+                </el-form>
+                <div style="display:inline-flex;align-items:center;width:34%;height:100%;vertical-align:middle;">
+                    <p style="font-size:3vmin;">輸入工號打卡 : </p>
+                    <el-input id="keyinEmpSn" type="text" style="width:40%" v-model="keyinEmpSn" v-on:keyup.enter.native="addRecordByEmpSn();"></el-input>
+                </div>
+            </div>
+
+
+            <div style="flex:1;margin:10px;margin-top:40px">
+                <el-button type="primary" round :style="BtnStyle1+'vertical-align:top;'" v-on:click="changeStatus(1)"><p style="font-size:10vmin">上班</p></el-button>
+                <el-button type="primary" round :style="BtnStyle2+'vertical-align:top;'" v-on:click="changeStatus(2)"><p style="font-size:10vmin">下班</p></el-button>
+                <canvas id="canvas" width="640" height="480" style="display:inline-block; width:30%;height:100%;vertical-align:top;"></canvas>
+            </div>
+
+            <div><p style="color:red;text-align:center">本系統個人資料之蒐集、處理或利用，應尊重當事人之權益，依誠實及信用方法為之，不得逾越特定目的之必要範圍，並應與蒐集之目的具有正當合理之關聯。</p><p id="version"></p></div>
+
+            <el-dialog :title="MsgTitle" :visible.sync="SuccessMsg" width="80%" height="100%">
+                <p :style="DateStyle">{{nowTime}}</p>
+                <el-carousel type="card" v-show="newRecordList.length > 0" height="30vh" :loop="true" :autoplay="false" :initial-index="1">
+                    <div v-for="(item,index) in newRecordList">
+                        <el-carousel-item :key="index">
+                            <el-form style="display:flex;align-items:center;vertical-align:top;margin:2vh">
+                                <el-form-item style="display:inline-block; width:40%;">
+                                    <label style="font-size:2.5vmin;"><i class="el-icon-warning-outline">{{item.SuccessMsgStr}}</i></label><br />
+                                    <label style="font-size:2.5vmin;"><i class="el-icon-warning-outline">{{item.SuccessEmpSn}}</i></label><br />
+                                    <label style="font-size:2.5vmin;"><i class="el-icon-warning-outline">{{item.SuccessDepName}}</i></label><br />
+                                    <label style="font-size:2.5vmin;"><i class="el-icon-warning-outline">{{item.SuccessNowDate}}</i></label><br />
+                                </el-form-item>
+                                <el-form-item style="position:relative; display:inline-block; width:59%;">
+                                    <img style="display:block; width:70%;margin:2vh" :src="item.nowPic" />
+                                </el-form-item>
+                            </el-form>
+                        </el-carousel-item>
+                    </div>
+
+                </el-carousel>
+            </el-dialog>
+
+            <!--<el-dialog :title="MsgTitle" :visible.sync="SuccessMsg" style="width:100%;">
+            <el-form>
+                <el-form-item style="display:inline-block; width:40%;vertical-align:middle;">
+                    <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessMsgStr}}</i></label><br />
+                    <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessEmpSn}}</i></label><br />
+                    <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessDepName}}</i></label><br />
+                </el-form-item>
+                <el-form-item style="display:inline-block; width:59%;vertical-align:middle;">
+                    <img style="display:inline-block; width:59%;vertical-align:middle;" :src="nowPic" />
+                </el-form-item>
+            </el-form>
+        </el-dialog>-->
+
+
+            <el-dialog :title="MsgTitle" :visible.sync="WaitMsg" style="width:100%;">
+                <el-form>
+                    <label style="font-size:30px"><i class="el-icon-warning-outline">請稍後再逼</i></label>
+                </el-form>
+            </el-dialog>
+        </div>
+
+        <div id="notification" class="hidden">
+            <p id="message"></p>
+            <button id="close-button" onClick="closeNotification()">
+                Close
+            </button>
+            <button id="restart-button" onClick="restartApp()" class="hidden">
+                Restart
+            </button>
+        </div>
+
+    </div>
+</body>
+</html>

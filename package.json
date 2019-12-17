@@ -1,0 +1,51 @@
+{
+  "name": "my-app",
+  "productName": "���d����",
+  "version": "1.0.3",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64",
+    "package_win": "electron-packager ./ Clock --out ./OutApp --electron-version 7.0.0 --overwrite ",
+    "package-linux": "electron-packager . my-app --platform linux --arch x64 --out dist/",
+    "debianCre": "electron-installer-debian --src dist/my-app-linux-x64/ --dest dist/installers/ --arch amd64",
+    "build": "electron-builder build --mac --win --publish never",
+    "deploy": "electron-builder build --win --publish always"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guo88882/Clock.git"
+  },
+  "devDependencies": {
+    "electron": "^7.1.5",
+    "electron-builder": "^21.2.0",
+    "electron-packager": "^14.1.0"
+  },
+  "build": {
+    "appId": "com.xxx.app",
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    },
+    "linux": {
+      "icon": "/home/kingnet/�ୱ/file/favicon.icon",
+      "category": "Utility",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
+  },
+  "dependencies": {
+    "auto-launch": "^5.0.5",
+    "electron-updater": "^4.2.0"
+  }
+}

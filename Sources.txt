@@ -1,0 +1,5 @@
+﻿https://www.npmjs.com/package/electron-installer-debian
+
+
+
+2.excel 很久

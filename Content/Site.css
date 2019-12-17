@@ -1,0 +1,184 @@
+﻿html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    height: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the header */
+header {
+    background-color: #181a1d;
+    height: 80px;
+    flex: none;
+}
+
+/* Create two columns/boxes that floats next to each other */
+nav {
+    flex: none;
+    width: 200px;
+    background: #5B5B5B;
+    color: white;
+    height: 100%;
+}
+
+article {
+    flex: 1;
+    background-color: white;
+    height: 100%; /* only for demonstration, should be removed */
+}
+
+/* Clear floats after the columns */
+section:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+section {
+    display: flex;
+    height: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0
+}
+
+body {
+    font-size: 12px;
+    font-family: "宋体","微软雅黑";
+}
+
+ul, li {
+    list-style: none;
+}
+
+a:link, a:visited {
+    text-decoration: none;
+}
+
+.list {
+    width: 210px;
+    border-bottom: solid 1px #316a91;
+    height: 100%;
+    background-color: midnightblue
+}
+
+    .list ul li {
+        background-color: #467ca2;
+        border: solid 1px #316a91;
+        border-bottom: 0;
+    }
+
+        .list ul li a {
+            padding-left: 10px;
+            color: #fff;
+            font-size: 12px;
+            display: block;
+            font-weight: bold;
+            height: 36px;
+            line-height: 36px;
+            position: relative;
+        }
+
+        .list ul li .inactive {
+            background: url(img/off.png) no-repeat 184px center;
+        }
+
+        .list ul li .inactives {
+            background: url(img/on.png) no-repeat 184px center;
+        }
+
+        .list ul li ul {
+            display: none;
+        }
+
+            .list ul li ul li {
+                border-left: 0;
+                border-right: 0;
+                background-color: #6196bb;
+                border-color: #467ca2;
+            }
+
+                .list ul li ul li ul {
+                    display: none;
+                }
+
+                .list ul li ul li a {
+                    padding-left: 20px;
+                }
+
+                .list ul li ul li ul li {
+                    background-color: #d6e6f1;
+                    border-color: #6196bb;
+                }
+
+.last {
+    background-color: #d6e6f1;
+    border-color: #6196bb;
+}
+
+.list ul li ul li ul li a {
+    color: #316a91;
+    padding-left: 30px;
+}
+
+.el-submenu .el-menu-item {
+    height: 30px;
+    line-height: 30px;
+}
+.el-submenu__title {
+    color: #0faede;
+}
+
+.el-menu-item{
+    color:#fff;
+}
+
+.el-menu-item, .el-submenu__title {
+    height: 30px;
+    line-height: 30px;
+}
+
+
+.el-submenu.collapse .el-submenu__title {
+    padding: 0px !important;
+}
+
+.el-menu:not(.el-menu--collapse) {
+    width: 200px;
+}
+
+.el-menu {
+    width: 0px;
+    border-right: none;
+}
+
+/*loader*/
+[v-cloak] > * {
+    display: none !important;
+}
+
+[v-cloak]::before {
+    content: " " !important;
+    display: block !important;
+    position: absolute !important;
+    width: 80px !important;
+    height: 80px !important;
+    background-image: url('../Content/img/loader.gif') !important;
+    background-size: cover !important;
+    left: 50% !important;
+    top: 50% !important;
+}
