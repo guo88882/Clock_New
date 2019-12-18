@@ -100,9 +100,7 @@ autoUpdater.on('update-available', () => {
     console.log('main_update-available')
     console.log("autoUpdate:" , autoUpdater)
     app.removeAllListeners("window-all-closed")
-    if (win != null) {
-        win.close()
-    }
+   
     autoUpdater.quitAndInstall();
     
     setTimeout(() => autoUpdater.quitAndInstall(), 2000);
