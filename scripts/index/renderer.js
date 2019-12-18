@@ -155,6 +155,15 @@ function vmStart() {
                     document.getElementById('notification').classList.remove('hidden');
                 });
 
+
+                ipcRenderer.on('restart_app', () => {
+                    console.log('restart_app')
+                  //  ipcRenderer.removeAllListeners('update_downloaded');
+                   // document.getElementById('message').innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
+                    //document.getElementById('restartButton').classList.remove('hidden');
+                   // document.getElementById('notification').classList.remove('hidden');
+                });
+
             });
             $("#cerrier").focus();
         },
