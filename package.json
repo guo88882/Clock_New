@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "Clock",
   "productName": "打卡介面",
   "version": "1.0.4",
   "main": "main.js",
@@ -12,12 +12,7 @@
     "build": "electron-builder build --mac --win --publish never",
     "deploy": "electron-builder build --win --publish always"
   },
-  "publish": [
-    {
-      "provider": "github",
-      "GH_TOKEN": "d18de42e0e23048cfd2efc8650779b8416d7de93"
-    }
-  ],
+
   "repository": {
     "type": "git",
     "url": "https://github.com/guo88882/Clock_New.git"
