@@ -5,3 +5,4 @@
 /OutApp/Clock-win32-x64
 /node_modules
 /dist
+/electron-builder.yml

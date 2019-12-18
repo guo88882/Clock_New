@@ -1,7 +1,7 @@
 {
   "name": "my-app",
-  "productName": "���d����",
-  "version": "1.0.3",
+  "productName": "打卡介面",
+  "version": "1.0.4",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -12,17 +12,25 @@
     "build": "electron-builder build --mac --win --publish never",
     "deploy": "electron-builder build --win --publish always"
   },
+  "publish": [
+    {
+      "provider": "github",
+      "GH_TOKEN": "d18de42e0e23048cfd2efc8650779b8416d7de93"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/guo88882/Clock.git"
+    "url": "https://github.com/guo88882/Clock_New.git"
   },
   "devDependencies": {
     "electron": "^7.1.5",
     "electron-builder": "^21.2.0",
     "electron-packager": "^14.1.0"
   },
+
   "build": {
     "appId": "com.xxx.app",
+
     "mac": {
       "target": [
         "dmg",
