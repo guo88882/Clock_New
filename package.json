@@ -9,7 +9,7 @@
     "package_win": "electron-packager ./ Clock --out ./OutApp --electron-version 7.0.0 --overwrite ",
     "package-linux": "electron-packager . my-app --platform linux --arch x64 --out dist/",
     "debianCre": "electron-installer-debian --src dist/my-app-linux-x64/ --dest dist/installers/ --arch amd64",
-    "build": "electron-builder build --mac --win --publish never",
+    "build": "electron-builder build --win --publish never",
     "deploy": "electron-builder build --win --publish always"
   },
 

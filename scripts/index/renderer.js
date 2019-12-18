@@ -128,33 +128,38 @@ function vmStart() {
                 window.setInterval(function () {
                     vm.GetCompanyGuid();
                 }, 1800000);
+                console.log('ipcRenderer' + ipcRenderer)
                 ipcRenderer.send('app_version');
                 ipcRenderer.on('app_version', (event, arg) => {
+                    console.log('app_version')
                     ipcRenderer.removeAllListeners('app_version');
                     document.getElementById('version').innerText = 'Version ' + arg.version;
                 });
 
                 ipcRenderer.on('update_available', () => {
+                    console.log('update_available')
                     ipcRenderer.removeAllListeners('update_available');
                     document.getElementById('message').innerText = 'A new update is available. Downloading now...';
                     document.getElementById('notification').classList.remove('hidden');
                 });
                 ipcRenderer.on('update_downloaded', () => {
+                    console.log('update_downloaded')
                     ipcRenderer.removeAllListeners('update_downloaded');
                     document.getElementById('message').innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
                     document.getElementById('restartButton').classList.remove('hidden');
                     document.getElementById('notification').classList.remove('hidden');
                 });
-            
+
             });
             $("#cerrier").focus();
         },
         methods: {
             closeNotification: function () {
-                notification.classList.add('hidden');
+                document.getElementById('notification').classList.add('hidden');
             },
             restartApp: function () {
                 ipcRenderer.send('restart_app');
+                console.log(ipcRenderer)
             },
             CheckUserExist: function () {
                 vm.loginDialog = true;
