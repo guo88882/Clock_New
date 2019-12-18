@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const { autoUpdater } = require('electron-updater');
 
 $(document).ready(function () {
 
@@ -140,7 +141,7 @@ function vmStart() {
                     console.log('update_available')
                     ipcRenderer.removeAllListeners('update_available');
                     document.getElementById('message').innerText = 'A new update is available. Downloading now...';
-                  //  document.getElementById('notification').classList.remove('hidden');
+                    document.getElementById('notification').classList.remove('hidden');
                   //  document.getElementById('restartButton').classList.remove('hidden');
 
                 });
@@ -149,7 +150,7 @@ function vmStart() {
                     ipcRenderer.removeAllListeners('update_downloaded');
                     document.getElementById('message').innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
                     //document.getElementById('restartButton').classList.remove('hidden');
-                   // document.getElementById('notification').classList.remove('hidden');
+                    document.getElementById('notification').classList.remove('hidden');
                 });
 
             });
@@ -160,6 +161,8 @@ function vmStart() {
                 document.getElementById('notification').classList.add('hidden');
             },
             restartApp: function () {
+                autoUpdater.quitAndInstall();
+
                 ipcRenderer.send('restart_app');
                 console.log(ipcRenderer)
             },
