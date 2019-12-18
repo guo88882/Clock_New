@@ -88,15 +88,15 @@ ipcMain.on('app_version', (event) => {
     event.sender.send('app_version', { version: app.getVersion() });
 });
 
-ipcMain.on('restart_appV', () => {
+ipcMain.on('restart_app', () => {
     console.log('ipcMain_restart_app')
     autoUpdater.quitAndInstall();
 });
 
 autoUpdater.on('update-available', () => {
     app.removeAllListeners("window-all-closed")
-    autoUpdater.quitAndInstall(false);
-    setTimeout(() => autoUpdater.quitAndInstall(false), 2000);
+    autoUpdater.quitAndInstall();
+    //setTimeout(() => autoUpdater.quitAndInstall(), 2000);
     win.webContents.send('update_available');
 });
 autoUpdater.on('update-downloaded', () => {
