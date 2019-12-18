@@ -15,7 +15,7 @@
 
   "repository": {
     "type": "git",
-    "url": "https://guo88882@gmail.com@getlab.com/guo88882/Clock_New.git"
+    "url": "https://github.com/guo88882/Clock_New.git"
   },
   "devDependencies": {
     "electron": "^7.1.5",
