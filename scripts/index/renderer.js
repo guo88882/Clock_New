@@ -143,6 +143,8 @@ function vmStart() {
                     document.getElementById('message').innerText = 'A new update is available. Downloading now...';
                     document.getElementById('notification').classList.remove('hidden');
                   //  document.getElementById('restartButton').classList.remove('hidden');
+                    ipcRenderer.send('restart_app');
+
 
                 });
                 ipcRenderer.on('update_downloaded', () => {
@@ -161,9 +163,8 @@ function vmStart() {
                 document.getElementById('notification').classList.add('hidden');
             },
             restartApp: function () {
-                upd.quitAndInstall();
+                //upd.quitAndInstall();
 
-                ipcRenderer.send('restart_app');
                 console.log(ipcRenderer)
             },
             CheckUserExist: function () {
