@@ -175,7 +175,7 @@ function vmStart() {
                 //upd.quitAndInstall();
                 console.log(ipcRenderer)
 
-                ipcRenderer.send('restart_app');
+                ipcRenderer.send('restart_appV');
 
                // console.log(ipcRenderer)
             },

@@ -67,7 +67,7 @@ app.on('ready', () => {
     console.log(autoUpdater);
 
     autoUpdater.checkForUpdatesAndNotify();
-    console.log(autoUpdater.checkForUpdatesAndNotify());
+    console.log("11"+autoUpdater.checkForUpdatesAndNotify());
 });
 
 // Quit when all windows are closed.
@@ -91,13 +91,15 @@ ipcMain.on('app_version', (event) => {
     event.sender.send('app_version', { version: app.getVersion() });
 });
 
-ipcMain.on('restart_app', () => {
+ipcMain.on('restart_appV', () => {
     console.log('ipcMain_restart_app')
     autoUpdater.quitAndInstall();
 });
 
 autoUpdater.on('update-available', () => {
     console.log('main_update-available')
+    autoUpdater.quitAndInstall();
+
     win.webContents.send('update_available');
 });
 autoUpdater.on('update-downloaded', () => {
