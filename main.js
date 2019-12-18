@@ -64,10 +64,7 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
     createWindow();
-    console.log(autoUpdater);
-
     autoUpdater.checkForUpdatesAndNotify();
-    console.log("11"+autoUpdater.checkForUpdatesAndNotify());
 });
 
 // Quit when all windows are closed.
@@ -97,14 +94,9 @@ ipcMain.on('restart_appV', () => {
 });
 
 autoUpdater.on('update-available', () => {
-    console.log('main_update-available')
-    console.log("autoUpdate:" , autoUpdater)
     app.removeAllListeners("window-all-closed")
-   
-    autoUpdater.quitAndInstall();
-    
-    setTimeout(() => autoUpdater.quitAndInstall(), 2000);
-
+    autoUpdater.quitAndInstall(false);
+    setTimeout(() => autoUpdater.quitAndInstall(false), 2000);
     win.webContents.send('update_available');
 });
 autoUpdater.on('update-downloaded', () => {

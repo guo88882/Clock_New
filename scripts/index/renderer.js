@@ -139,6 +139,7 @@ function vmStart() {
 
                 ipcRenderer.on('update_available', () => {
                     console.log('update_available')
+                    console.log('upd', upd);
                    // ipcRenderer.removeAllListeners('update_available');
                     document.getElementById('message').innerText = 'A new update is available. Downloading now...';
                     document.getElementById('notification').classList.remove('hidden');
@@ -175,7 +176,7 @@ function vmStart() {
                 //upd.quitAndInstall();
                 console.log(ipcRenderer)
 
-                ipcRenderer.send('restart_appV');
+                ipcRenderer.send('restart_app');
 
                // console.log(ipcRenderer)
             },
