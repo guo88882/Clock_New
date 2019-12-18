@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron');
-const { autoUpdater } = require('electron-updater');
+const { upd } = require('electron-updater');
 
 $(document).ready(function () {
 
@@ -161,7 +161,7 @@ function vmStart() {
                 document.getElementById('notification').classList.add('hidden');
             },
             restartApp: function () {
-                autoUpdater.quitAndInstall();
+                upd.quitAndInstall();
 
                 ipcRenderer.send('restart_app');
                 console.log(ipcRenderer)
