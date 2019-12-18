@@ -133,13 +133,13 @@ function vmStart() {
                 ipcRenderer.send('app_version');
                 ipcRenderer.on('app_version', (event, arg) => {
                     console.log('app_version')
-                    ipcRenderer.removeAllListeners('app_version');
+                    //ipcRenderer.removeAllListeners('app_version');
                     document.getElementById('version').innerText = 'Version ' + arg.version;
                 });
 
                 ipcRenderer.on('update_available', () => {
                     console.log('update_available')
-                    ipcRenderer.removeAllListeners('update_available');
+                   // ipcRenderer.removeAllListeners('update_available');
                     document.getElementById('message').innerText = 'A new update is available. Downloading now...';
                     document.getElementById('notification').classList.remove('hidden');
                   //  document.getElementById('restartButton').classList.remove('hidden');
@@ -164,8 +164,11 @@ function vmStart() {
             },
             restartApp: function () {
                 //upd.quitAndInstall();
-
                 console.log(ipcRenderer)
+
+                ipcRenderer.send('restart_app');
+
+               // console.log(ipcRenderer)
             },
             CheckUserExist: function () {
                 vm.loginDialog = true;

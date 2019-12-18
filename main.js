@@ -91,6 +91,11 @@ ipcMain.on('app_version', (event) => {
     event.sender.send('app_version', { version: app.getVersion() });
 });
 
+ipcMain.on('restart_app', () => {
+    console.log('ipcMain_restart_app')
+    autoUpdater.quitAndInstall();
+});
+
 autoUpdater.on('update-available', () => {
     console.log('main_update-available')
     win.webContents.send('update_available');
@@ -100,7 +105,4 @@ autoUpdater.on('update-downloaded', () => {
     win.webContents.send('update_downloaded');
 });
 
-ipcMain.on('restart_app', () => {
-    console.log('ipcMain_restart_app')
-    autoUpdater.quitAndInstall();
-});
+
