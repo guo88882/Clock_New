@@ -12,7 +12,6 @@
     "build": "electron-builder build --win --publish never",
     "deploy": "electron-builder build --win --publish always"
   },
-
   "repository": {
     "type": "git",
     "url": "https://github.com/guo88882/Clock_New.git"
@@ -22,10 +21,8 @@
     "electron-builder": "^21.2.0",
     "electron-packager": "^14.1.0"
   },
-
   "build": {
     "appId": "com.xxx.app",
-
     "mac": {
       "target": [
         "dmg",
@@ -49,6 +46,7 @@
   },
   "dependencies": {
     "auto-launch": "^5.0.5",
+    "electron-log": "^4.0.0",
     "electron-updater": "^4.2.0"
   }
 }

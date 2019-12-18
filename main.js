@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const url = require('url')
 const { Menu } = require('electron')
-
+const log = require('electron-log');
 const { autoUpdater } = require('electron-updater');
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -95,6 +95,7 @@ ipcMain.on('restart_app', () => {
 
 autoUpdater.on('update-available', () => {
     app.removeAllListeners("window-all-closed")
+    log.info('Hello, log');
     autoUpdater.quitAndInstall();
     //setTimeout(() => autoUpdater.quitAndInstall(), 2000);
     win.webContents.send('update_available');
