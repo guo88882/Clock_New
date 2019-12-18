@@ -141,6 +141,8 @@ function vmStart() {
                     ipcRenderer.removeAllListeners('update_available');
                     document.getElementById('message').innerText = 'A new update is available. Downloading now...';
                     document.getElementById('notification').classList.remove('hidden');
+                    document.getElementById('restartButton').classList.remove('hidden');
+
                 });
                 ipcRenderer.on('update_downloaded', () => {
                     console.log('update_downloaded')
