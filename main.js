@@ -21,7 +21,7 @@ var minecraftAutoLauncher = new AutoLaunch({
 
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
-log.info('app starting...');
+//log.info('app starting...');
 autoUpdater.autoDownload = true;
 
 minecraftAutoLauncher.isEnabled().then(function (isEnabled) {
@@ -101,8 +101,8 @@ ipcMain.on('restart_app', () => {
 
 autoUpdater.on('update-available', () => {
    // app.removeAllListeners("window-all-closed")
-    log.info('Hello, log');
-    autoUpdater.quitAndInstall();
+  //  log.info('Hello, log');
+  //  autoUpdater.quitAndInstall();
     //setTimeout(() => autoUpdater.quitAndInstall(), 2000);
     win.webContents.send('update_available');
 });

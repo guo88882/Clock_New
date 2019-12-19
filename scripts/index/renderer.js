@@ -1,6 +1,4 @@
 const { ipcRenderer } = require('electron');
-const { upd } = require('electron-updater');
-
 
 $(document).ready(function () {
 
@@ -130,40 +128,25 @@ function vmStart() {
                 window.setInterval(function () {
                     vm.GetCompanyGuid();
                 }, 1800000);
-                console.log('ipcRenderer' + ipcRenderer)
                 ipcRenderer.send('app_version');
                 ipcRenderer.on('app_version', (event, arg) => {
-                    console.log('app_version')
-                    //ipcRenderer.removeAllListeners('app_version');
+                    ipcRenderer.removeAllListeners('app_version');
                     document.getElementById('version').innerText = 'Version ' + arg.version;
                 });
 
                 ipcRenderer.on('update_available', () => {
-                    console.log('update_available')
-                    console.log('upd', upd);
-                   // ipcRenderer.removeAllListeners('update_available');
+                    ipcRenderer.removeAllListeners('update_available');
                     document.getElementById('message').innerText = 'A new update is available. Downloading now...';
                     document.getElementById('notification').classList.remove('hidden');
-                  //  document.getElementById('restartButton').classList.remove('hidden');
                     ipcRenderer.send('restart_app');
 
 
                 });
                 ipcRenderer.on('update_downloaded', () => {
-                    console.log('update_downloaded')
                     ipcRenderer.removeAllListeners('update_downloaded');
                     document.getElementById('message').innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
-                    //document.getElementById('restartButton').classList.remove('hidden');
+                    document.getElementById('restartButton').classList.remove('hidden');
                     document.getElementById('notification').classList.remove('hidden');
-                });
-
-
-                ipcRenderer.on('restart_app', () => {
-                    console.log('restart_app')
-                  //  ipcRenderer.removeAllListeners('update_downloaded');
-                   // document.getElementById('message').innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
-                    //document.getElementById('restartButton').classList.remove('hidden');
-                   // document.getElementById('notification').classList.remove('hidden');
                 });
 
             });
@@ -174,12 +157,7 @@ function vmStart() {
                 document.getElementById('notification').classList.add('hidden');
             },
             restartApp: function () {
-                //upd.quitAndInstall();
-                console.log(ipcRenderer)
-
                 ipcRenderer.send('restart_app');
-
-               // console.log(ipcRenderer)
             },
             CheckUserExist: function () {
                 vm.loginDialog = true;
