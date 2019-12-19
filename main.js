@@ -22,6 +22,7 @@ var minecraftAutoLauncher = new AutoLaunch({
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('app starting...');
+autoUpdater.autoDownload = true;
 
 minecraftAutoLauncher.isEnabled().then(function (isEnabled) {
     if (isEnabled == false) {
