@@ -138,12 +138,12 @@
             </el-dialog>
         </div>
 
-        <div id="notification" class="hidden">
-            <p id="message"></p>
-            <button id="close-button" v-on:click="closeNotification()">
+        <div v-show="notification">
+            <p>{{message}}</p>
+            <button v-show="closeBtn" v-on:click="closeNotification()">
                 關閉
             </button>
-            <button id="restart-button" v-on:click="restartApp()" class="hidden">
+            <button v-show="restartBtn" v-on:click="restartApp()">
                 安裝
             </button>
         </div>

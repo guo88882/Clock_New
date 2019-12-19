@@ -54,6 +54,11 @@ function vmStart() {
             UploadApiPath: "https://hr.kingnetsmart.com.tw/KingnetAppApi/api/",
             NewEIPApiPath: "https://hr.kingnetsmart.com.tw/NewEIP_API/api/",
             now: null,
+            notification: false,
+            message: "",
+            closeBtn: false,
+            restartBtn: false,
+
         },
         computed: {
             newRecordList: function () {
@@ -136,17 +141,18 @@ function vmStart() {
 
                 ipcRenderer.on('update_available', () => {
                     ipcRenderer.removeAllListeners('update_available');
-                    document.getElementById('message').innerText = 'A new update is available. Downloading now...';
-                    document.getElementById('notification').classList.remove('hidden');
+                    vm.message = 'A new update is available. Downloading now...';
+                    vm.fullscreenLoading = true
+                    vm.notification = true;
                     ipcRenderer.send('restart_app');
 
 
                 });
                 ipcRenderer.on('update_downloaded', () => {
                     ipcRenderer.removeAllListeners('update_downloaded');
-                    document.getElementById('message').innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
-                    document.getElementById('restartButton').classList.remove('hidden');
-                    document.getElementById('notification').classList.remove('hidden');
+                    vm.message = 'Update Downloaded. It will be installed on restart. Restart now?';
+                    vm.restartBtn = true;
+                    vm.notification = true;
                 });
 
             });
@@ -154,7 +160,7 @@ function vmStart() {
         },
         methods: {
             closeNotification: function () {
-                document.getElementById('notification').classList.add('hidden');
+                vm.notification = false;
             },
             restartApp: function () {
                 ipcRenderer.send('restart_app');
