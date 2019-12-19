@@ -56,7 +56,6 @@ function createWindow() {
         // when you should delete the corresponding element.
         win = null
     })
-    log.info('Hello, log');
 
 }
 
@@ -87,6 +86,8 @@ app.on('activate', () => {
 
 ipcMain.on('app_version', (event) => {
     event.sender.send('app_version', { version: app.getVersion() });
+    log.info('Hello, log');
+
 });
 
 ipcMain.on('restart_app', () => {
@@ -95,7 +96,7 @@ ipcMain.on('restart_app', () => {
 });
 
 autoUpdater.on('update-available', () => {
-    app.removeAllListeners("window-all-closed")
+   // app.removeAllListeners("window-all-closed")
     log.info('Hello, log');
     autoUpdater.quitAndInstall();
     //setTimeout(() => autoUpdater.quitAndInstall(), 2000);
