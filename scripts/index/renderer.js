@@ -74,11 +74,20 @@ function vmStart() {
 
                 var strS = y + '/' + M + '/' + d + " 09:01:00";
                 var strD = y + '/' + M + '/' + d + " 18:00:00";
+                var changeStatusSD = y + '/' + M + '/' + d + " 07:30:00";
+                var changeStatusDD = y + '/' + M + '/' + d + " 16:00:00";
                 if (now >= Date.parse(strS).valueOf() && now <= Date.parse(strD).valueOf()) {
                     vm.DateStyle = "width:100%;font-size:13vmin;color:orange;margin:5px";
                 }
                 else {
                     vm.DateStyle = "width:100%;font-size:13vmin;color:forestgreen;margin:5px";
+                }
+
+                if (now >= Date.parse(changeStatusSD).valueOf() && now <= Date.parse(changeStatusDD).valueOf()) {
+                    vm.changeStatus(1);
+                }
+                else {
+                    vm.changeStatus(2);
                 }
             },
             "SuccessCount": function () {
