@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\OutApp",
-    "\\scripts",
-    "\\scripts\\index"
+    "\\scripts\\index",
+    "\\view"
   ],
+  "SelectedNode": "\\main.js",
   "PreviewInSolutionExplorer": false
 }
