@@ -1,5 +1,6 @@
 const { ipcRenderer } = require('electron');
-const { upd } = require('electron-updater');
+const { autoUpdater } = require('electron-updater');
+
 
 $(document).ready(function () {
 

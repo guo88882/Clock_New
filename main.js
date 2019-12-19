@@ -18,6 +18,11 @@ var minecraftAutoLauncher = new AutoLaunch({
         useLaunchAgent: false //是否启用代理启动，默认是AppleScript启动
     }
 });
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('app starting...');
+
 minecraftAutoLauncher.isEnabled().then(function (isEnabled) {
     if (isEnabled == false) {
         minecraftAutoLauncher.enable();
@@ -86,8 +91,6 @@ app.on('activate', () => {
 
 ipcMain.on('app_version', (event) => {
     event.sender.send('app_version', { version: app.getVersion() });
-    log.info('Hello, log');
-
 });
 
 ipcMain.on('restart_app', () => {
