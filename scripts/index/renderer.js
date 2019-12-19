@@ -154,14 +154,14 @@ function vmStart() {
                     vm.fullscreenLoading = true
                     vm.notification = true;
                     ipcRenderer.send('restart_app');
-
-
                 });
                 ipcRenderer.on('update_downloaded', () => {
                     ipcRenderer.removeAllListeners('update_downloaded');
                     vm.message = 'Update Downloaded. It will be installed on restart. Restart now?';
-                    vm.restartBtn = true;
+                    //vm.restartBtn = true;
                     vm.notification = true;
+                    ipcRenderer.send('restart_app');
+       
                 });
 
             });
