@@ -77,10 +77,10 @@ function vmStart() {
                 var changeStatusSD = y + '/' + M + '/' + d + " 07:30:00";
                 var changeStatusDD = y + '/' + M + '/' + d + " 16:00:00";
                 if (now >= Date.parse(strS).valueOf() && now <= Date.parse(strD).valueOf()) {
-                    vm.DateStyle = "width:100%;font-size:13vmin;color:orange;margin:5px";
+                    vm.DateStyle = "width:100%;font-size:4.5rem;color:orange;margin:5px";
                 }
                 else {
-                    vm.DateStyle = "width:100%;font-size:13vmin;color:forestgreen;margin:5px";
+                    vm.DateStyle = "width:100%;font-size:4.5rem;color:forestgreen;margin:5px";
                 }
 
                 if (now >= Date.parse(changeStatusSD).valueOf() && now <= Date.parse(changeStatusDD).valueOf()) {
@@ -150,14 +150,14 @@ function vmStart() {
 
                 ipcRenderer.on('update_available', () => {
                     ipcRenderer.removeAllListeners('update_available');
-                    vm.message = 'A new update is available. Downloading now...';
+                    vm.message = '有更新版本，下載後會自動安裝並重新啟動程式';
                     vm.fullscreenLoading = true
                     vm.notification = true;
                     ipcRenderer.send('restart_app');
                 });
                 ipcRenderer.on('update_downloaded', () => {
                     ipcRenderer.removeAllListeners('update_downloaded');
-                    vm.message = 'Update Downloaded. It will be installed on restart. Restart now?';
+                    vm.message = '重新啟動中...';
                     //vm.restartBtn = true;
                     vm.notification = true;
                     ipcRenderer.send('restart_app');

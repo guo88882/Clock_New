@@ -1,8 +1,10 @@
 {
   "name": "my-app",
   "productName": "打卡介面",
-  "version": "1.0.44",
+  "version": "1.0.45",
   "main": "main.js",
+  "email": "guo88882@gmail.com",
+  "author": "GJS <guo88882@gmail.com>",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win --x64",
@@ -11,7 +13,7 @@
     "debianCre": "electron-installer-debian --src dist/my-app-linux-x64/ --dest dist/installers/ --arch amd64",
     "build": "electron-builder build --win --publish never",
     "deploy": "electron-builder build --win --publish always",
-    "deploy_linux": "electron-builder build --linux --publish always"
+    "deploy_linux": "electron-builder build --linux --win --publish always"
 
   },
   "repository": {
