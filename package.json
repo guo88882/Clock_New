@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "productName": "打卡介面",
-  "version": "1.0.50",
+  "version": "1.0.51",
   "main": "main.js",
   "email": "guo88882@gmail.com",
   "author": "GJS <guo88882@gmail.com>",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/guo88882/Clock_New.git"
+    "url": "https://kingnetrd.visualstudio.com/HR_Clock/_git/HR_Clock"
   },
   "devDependencies": {
     "electron": "^6.0.12",
