@@ -1,7 +1,6 @@
 const { ipcRenderer } = require('electron');
 
 $(document).ready(function () {
-
     vmStart();
 });
 var vm;
@@ -58,7 +57,8 @@ function vmStart() {
             message: "",
             closeBtn: false,
             restartBtn: false,
-
+            LengthTitle: "¿ù»~",
+            LengthError:false,
         },
         computed: {
             newRecordList: function () {
@@ -74,8 +74,12 @@ function vmStart() {
 
                 var strS = y + '/' + M + '/' + d + " 09:01:00";
                 var strD = y + '/' + M + '/' + d + " 18:00:00";
-                var changeStatusSD = y + '/' + M + '/' + d + " 07:30:00";
-                var changeStatusDD = y + '/' + M + '/' + d + " 16:00:00";
+                var changeStatusSDS = y + '/' + M + '/' + d + " 07:30:00";
+                var changeStatusSDD = y + '/' + M + '/' + d + " 07:30:05";
+
+                var changeStatusDDS = y + '/' + M + '/' + d + " 16:20:00";
+                var changeStatusDDD = y + '/' + M + '/' + d + " 16:20:05";
+
                 if (now >= Date.parse(strS).valueOf() && now <= Date.parse(strD).valueOf()) {
                     vm.DateStyle = "width:100%;font-size:4.5rem;color:orange;margin:5px";
                 }
@@ -83,10 +87,10 @@ function vmStart() {
                     vm.DateStyle = "width:100%;font-size:4.5rem;color:forestgreen;margin:5px";
                 }
 
-                if (now == Date.parse(changeStatusSD).valueOf()) {
+                if (now >= Date.parse(changeStatusSDS).valueOf() && now <= Date.parse(changeStatusSDD).valueOf()) {
                     vm.changeStatus(1);
                 }
-                if (now == Date.parse(changeStatusDD).valueOf()) {
+                if (now >= Date.parse(changeStatusDDS).valueOf() && now <= Date.parse(changeStatusDDD).valueOf()) {
                     vm.changeStatus(2);
                 }
             },
@@ -507,7 +511,12 @@ function vmStart() {
                 }
                 if (vm.keyinEmpSn.length != 9) {
                     vm.keyinEmpSn = "";
-                    alert('ªø«×¿ù»~');
+                    vm.LengthError = true;
+                    window.setTimeout(function () {
+                        vm.LengthError = false;
+                    }, 2000);
+                    vm.LengthError = true;
+                    $("#cerrier").focus();
                     return;
                 }
                 var ca = vm.keyinEmpSn;

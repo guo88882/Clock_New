@@ -118,22 +118,28 @@
             </el-dialog>
 
             <!--<el-dialog :title="MsgTitle" :visible.sync="SuccessMsg" style="width:100%;">
-            <el-form>
-                <el-form-item style="display:inline-block; width:40%;vertical-align:middle;">
-                    <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessMsgStr}}</i></label><br />
-                    <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessEmpSn}}</i></label><br />
-                    <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessDepName}}</i></label><br />
-                </el-form-item>
-                <el-form-item style="display:inline-block; width:59%;vertical-align:middle;">
-                    <img style="display:inline-block; width:59%;vertical-align:middle;" :src="nowPic" />
-                </el-form-item>
-            </el-form>
-        </el-dialog>-->
+        <el-form>
+            <el-form-item style="display:inline-block; width:40%;vertical-align:middle;">
+                <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessMsgStr}}</i></label><br />
+                <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessEmpSn}}</i></label><br />
+                <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessDepName}}</i></label><br />
+            </el-form-item>
+            <el-form-item style="display:inline-block; width:59%;vertical-align:middle;">
+                <img style="display:inline-block; width:59%;vertical-align:middle;" :src="nowPic" />
+            </el-form-item>
+        </el-form>
+    </el-dialog>-->
 
 
             <el-dialog :title="MsgTitle" :visible.sync="WaitMsg" style="width:100%;">
                 <el-form>
                     <label style="font-size:30px"><i class="el-icon-warning-outline">請稍後再逼</i></label>
+                </el-form>
+            </el-dialog>
+
+            <el-dialog :title="LengthTitle" :visible.sync="LengthError" style="width:100%;">
+                <el-form>
+                    <label style="font-size:30px"><i class="el-icon-warning-outline">長度錯誤</i></label>
                 </el-form>
             </el-dialog>
         </div>
