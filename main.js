@@ -97,6 +97,10 @@ ipcMain.on('app_version', (event) => {
     event.sender.send('app_version', { version: app.getVersion() });
 });
 
+ipcMain.on('restartV', (event) => {
+    app.relaunch({ args: process.argv.slice(1).concat(['--relaunch']) })
+    app.exit(0)});
+
 ipcMain.on('restart_app', () => {
     console.log('ipcMain_restart_app')
     autoUpdater.quitAndInstall();

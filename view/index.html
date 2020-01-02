@@ -3,6 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=big5" />
     <!--<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>-->
+
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
     <script src="../scripts/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="../scripts/jquery-1.11.1.min.js"></script>
@@ -19,6 +21,8 @@
     <script src="../scripts/facedetection/pico.js"></script>
     <script src="../scripts/facedetection/index.js"></script>
     <script src="../scripts/facedetection/html2canvas.js"></script>
+
+
     <title>打卡系統</title>
     <style>
         .el-carousel__item h3 {
@@ -70,6 +74,7 @@
         <div v-show="CheckUser" style="width:100%;height:100%;display:flex;flex-direction:column;margin:20px;margin-top:40px" v-loading="fullscreenLoading">
             <input id="cerrier" type="password" autofocus style="position:absolute;top:-9999px" v-model="carrier" v-on:keyup.enter="addRecord()" />
             <!--style="position:absolute;top:-9999px"-->
+            <!--<el-button type="primary" v-on:click="restartV">確定</el-button>-->
 
             <div style="display:flex">
                 <el-form style="width:65%;display:inline-flex">

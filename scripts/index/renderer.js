@@ -88,7 +88,7 @@ function vmStart() {
                 }
 
                 if (now >= Date.parse(changeStatusSDS).valueOf() && now <= Date.parse(changeStatusSDD).valueOf()) {
-                    vm.changeStatus(1);
+                    ipcRenderer.send('restartV');
                 }
                 if (now >= Date.parse(changeStatusDDS).valueOf() && now <= Date.parse(changeStatusDDD).valueOf()) {
                     vm.changeStatus(2);
@@ -172,6 +172,7 @@ function vmStart() {
             $("#cerrier").focus();
         },
         methods: {
+
             closeNotification: function () {
                 vm.notification = false;
             },
