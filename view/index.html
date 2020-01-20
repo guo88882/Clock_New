@@ -56,7 +56,7 @@
             display: none;
         }
 
-        #box  {
+        #box {
             position: absolute;
             top: 0;
             left: 0;
@@ -77,7 +77,7 @@
             </el-form>
             <el-button type="primary" v-on:click="CheckUserExist">確定</el-button>
         </div>
-      
+
 
         <!--<img src="../img/test.jpg" width="400" height="400" id="myImage" />-->
         <!--<canvas id="canvas" width="640" height="480"></canvas>-->
@@ -101,19 +101,19 @@
                     <p style="font-size:3vmin;">輸入工號打卡 : </p>
                     <el-input id="keyinEmpSn" type="text" style="width:40%" v-model="keyinEmpSn" v-on:keyup.enter.native="addRecordByEmpSn();"></el-input>
                 </div>
-      
+
             </div>
 
 
-            <div style="flex:1;margin:10px;margin-top:40px">
+            <div style="margin:10px;margin-top:40px">
                 <el-button type="primary" round :style="BtnStyle1+'vertical-align:top;'" v-on:click="changeStatus(1)"><p style="font-size:10vmin">上班</p></el-button>
                 <el-button type="primary" round :style="BtnStyle2+'vertical-align:top;'" v-on:click="changeStatus(2)"><p style="font-size:10vmin">下班</p></el-button>
                 <!--<canvas id="canvas" width="640" height="480" style="display:inline-block; width:30%;height:100%;vertical-align:top;"></canvas>-->
-                <div style="position: relative;display:inline-block; width:30%;height:100%;vertical-align:top;" class="margin">
-                    <p style="font-size:3vmin;">辨識工號 : {{ViewEmpSn}}  </p>
 
-                    <video id="inputVideo" width="640" height="480" autoplay muted playsinline></video>
-                    <canvas id="box" width="640" height="480"></canvas>
+                <div style="position: relative;display:inline-block; width:35%;vertical-align:top;">
+                    <p style="font-size:3vmin;">辨識工號 : {{ViewEmpSn}}  </p>
+                    <video id="inputVideo" width="100%" height="100%" style="display:inline-block;width:100%;vertical-align:top;" autoplay muted playsinline></video>
+                    <canvas id="box" width="100%" style="width:100%;height:100%;vertical-align:top;"></canvas>
                 </div>
             </div>
 
@@ -142,17 +142,17 @@
             </el-dialog>
 
             <!--<el-dialog :title="MsgTitle" :visible.sync="SuccessMsg" style="width:100%;">
-            <el-form>
-                <el-form-item style="display:inline-block; width:40%;vertical-align:middle;">
-                    <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessMsgStr}}</i></label><br />
-                    <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessEmpSn}}</i></label><br />
-                    <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessDepName}}</i></label><br />
-                </el-form-item>
-                <el-form-item style="display:inline-block; width:59%;vertical-align:middle;">
-                    <img style="display:inline-block; width:59%;vertical-align:middle;" :src="nowPic" />
-                </el-form-item>
-            </el-form>
-        </el-dialog>-->
+                <el-form>
+                    <el-form-item style="display:inline-block; width:40%;vertical-align:middle;">
+                        <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessMsgStr}}</i></label><br />
+                        <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessEmpSn}}</i></label><br />
+                        <label style="font-size:30px"><i class="el-icon-warning-outline">{{SuccessDepName}}</i></label><br />
+                    </el-form-item>
+                    <el-form-item style="display:inline-block; width:59%;vertical-align:middle;">
+                        <img style="display:inline-block; width:59%;vertical-align:middle;" :src="nowPic" />
+                    </el-form-item>
+                </el-form>
+            </el-dialog>-->
 
 
             <el-dialog :title="MsgTitle" :visible.sync="WaitMsg" style="width:100%;">
