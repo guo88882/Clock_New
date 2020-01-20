@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "productName": "打卡介面",
-  "version": "1.0.56",
+  "version": "1.0.57",
   "main": "main.js",
   "email": "guo88882@gmail.com",
   "author": "GJS <guo88882@gmail.com>",
@@ -14,7 +14,6 @@
     "build": "electron-builder build --win --publish never",
     "deploy": "electron-builder build --win --publish always",
     "deploy_linux": "electron-builder build --linux --win --publish always"
-
   },
   "repository": {
     "type": "git",
@@ -50,6 +49,7 @@
   "dependencies": {
     "auto-launch": "^5.0.5",
     "electron-log": "^4.0.0",
-    "electron-updater": "^4.2.0"
+    "electron-updater": "^4.2.0",
+    "face-api.js": "^0.22.0"
   }
 }

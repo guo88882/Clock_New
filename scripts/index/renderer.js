@@ -1,6 +1,16 @@
 const { ipcRenderer } = require('electron');
-
 $(document).ready(function () {
+    faceapi.env.monkeyPatch({
+        Canvas: HTMLCanvasElement,
+        Image: HTMLImageElement,
+        ImageData: ImageData,
+        Video: HTMLVideoElement,
+        createCanvasElement: () => document.createElement('canvas'),
+        createImageElement: () => document.createElement('img')
+    })
+    const fs = require('fs');
+    faceapi.env.setEnv(Object.assign(faceapi.env.createBrowserEnv(), faceapi.env.createFileSystem(fs)));
+
     vmStart();
 });
 var vm;
@@ -58,7 +68,15 @@ function vmStart() {
             closeBtn: false,
             restartBtn: false,
             LengthTitle: "錯誤",
-            LengthError:false,
+            LengthError: false,
+            ImageMap: null,
+            Video: null,
+            Canvas: null,
+            CheckToImg: [],
+            FaceCheckCount: 0,
+            FaceCheckName: "",
+            FaceTopName: "",
+            ViewEmpSn:"",
         },
         computed: {
             newRecordList: function () {
@@ -66,6 +84,9 @@ function vmStart() {
             }
         },
         watch: {
+            "CheckToImg": function () {
+
+            },
             "nowTime": function () {
                 var now = new Date();//生成日期物件(完整的日期資訊)
                 var y = now.getFullYear();//年份
@@ -140,6 +161,9 @@ function vmStart() {
             }
         },
         mounted: function () {
+            this.Video = document.getElementById('inputVideo');
+            this.Canvas = document.getElementById('box');
+            this.face();
             this.newDate();
             this.$nextTick(function () {
                 vm.GetCompanyGuid();
@@ -165,13 +189,251 @@ function vmStart() {
                     //vm.restartBtn = true;
                     vm.notification = true;
                     ipcRenderer.send('restart_app');
-       
+
                 });
 
             });
             $("#cerrier").focus();
         },
         methods: {
+            face: async function () {
+                console.log('start');
+                console.log('face')
+                //  await faceapi.nets.ssdMobilenetv1.loadFromUri('../node_modules/face-api.js/weights')
+                await faceapi.loadTinyFaceDetectorModel('../node_modules/face-api.js/weights')
+                // await faceapi.loadMtcnnModel('../node_modules/face-api.js/weights')
+                await faceapi.loadFaceRecognitionModel('../node_modules/face-api.js/weights')
+                await faceapi.loadFaceLandmarkTinyModel('../node_modules/face-api.js/weights')
+                await faceapi.nets.faceLandmark68Net.loadFromUri('../node_modules/face-api.js/weights')
+                console.log('ok');
+                //this.onPlay();
+                const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
+                //const videoEl = $('#inputVideo').get(0)
+                vm.Video.srcObject = stream
+                await vm.getFace();
+                //faceapi.SsdMobilenetv1Options.minConfidence = 0.4;
+
+                //const mtcnnResults = await faceapi.mtcnn(document.getElementById('canvas'), mtcnnForwardParams)
+
+                //console.log(mtcnnResults)
+
+                //faceapi.drawDetections('overlay', mtcnnResults.map(res => res.faceDetection), { withScore: false })
+                //faceapi.drawFaceLandmarks('overlay', mtcnnResults.map(res => res.faceLandmarks), { lineWidth: 4, color: 'red' })
+
+                // try to access users webcam and stream the images
+                // to the video element
+
+                //await faceapi.loadSsdMobilenetv1Model('../node_modules/face-api.js/weights')
+                //await faceapi.loadFaceLandmarkModel('../node_modules/face-api.js/weights')
+                //await faceapi.loadFaceRecognitionModel('../node_modules/face-api.js/weights')
+
+                //const canvas = document.getElementById('canvas1')
+                //const input = document.getElementById('myImage')
+                //let fullFaceDescriptions = await faceapi.detectAllFaces(input).withFaceLandmarks().withFaceDescriptors();
+                //console.log(fullFaceDescriptions);
+                ////fullFaceDescriptions = faceapi.resizeResults(fullFaceDescriptions)
+                //faceapi.draw.drawDetections(canvas, fullFaceDescriptions)
+                //console.log(faceapi);
+                //faceapi.draw.drawFaceLandmarks(canvas, fullFaceDescriptions)
+            },
+            onPlay: async function onPlay() {
+                //const canvas = document.getElementById('canvas')
+                //const myImage = document.getElementById('myImage')
+                // const videoEl = $('#inputVideo').get(0)
+                // const canvas1 = document.getElementById('box')
+
+                //vm.ImageMap = await faceapi
+                //    .detectAllFaces(myImage, new faceapi.TinyFaceDetectorOptions())
+                //    .withFaceLandmarks()
+                //    .withFaceDescriptors()
+
+                //if (!vm.ImageMap.length) {
+                //    return
+                //}
+             //   console.log(vm.ImageMap)
+                const faceMatcher = new faceapi.FaceMatcher(vm.ImageMap)
+                const singleResult = await faceapi
+                    .detectSingleFace(vm.Video, new faceapi.TinyFaceDetectorOptions({ inputSize:160}))
+                    .withFaceLandmarks(true)
+                    .withFaceDescriptor()
+                var name;
+                var distance;
+                if (singleResult) {
+                    const bestMatch = faceMatcher.findBestMatch(singleResult.descriptor)
+                    name = bestMatch.label;
+                    if (vm.FaceCheckName != name) {
+                        vm.FaceCheckName = '';
+                    }
+                    else {
+                        vm.FaceCheckName = name;
+                    }
+                    distance = bestMatch.distance.toFixed(2);
+                    if (parseFloat(distance) <= 0.4) {
+                        const displaySize = { width: 640, height: 480 }
+                        const resizedResults = faceapi.resizeResults(singleResult, displaySize)
+
+                        const dims = faceapi.matchDimensions(vm.Canvas, vm.Video, true)
+
+                        // faceapi.draw.drawDetections(canvas1, resizedResults)
+                        //faceapi.draw.drawFaceLandmarks(canvas1, resizedResults)
+                        //console.log(resizedResults)
+                        const drawOptions = {
+                            label: name + '---' + distance
+                        }
+
+                        var x = resizedResults.detection.box.x;
+                        var y = resizedResults.detection.box.y;
+                        var w = resizedResults.detection.box.width;
+                        var h = resizedResults.detection.box.height;
+
+                        const box = { x: x, y: y, width: w, height: h }
+                        const drawBox = new faceapi.draw.DrawBox(box, drawOptions)
+                        drawBox.draw(vm.Canvas, resizedResults)
+                        vm.ViewEmpSn = name;
+                        //if (vm.FaceCheckName == name) {
+                        //    vm.FaceCheckCount++;
+                            
+                        //    if (vm.FaceCheckCount == 30) {
+                        //        vm.addRecordByFace(name);
+                        //        vm.FaceCheckCount = 0;
+                        //    }
+                        //}
+                        //else {
+                        //    vm.FaceCheckCount = 0;
+                        //    vm.FaceCheckName = name;
+                        //}
+                    }
+                    else {
+                        const context = vm.Canvas.getContext('2d');
+                        context.clearRect(0, 0, vm.Canvas.width, vm.Canvas.height);
+                        vm.ViewEmpSn = '';
+                    }
+
+                    setTimeout(() => vm.onPlay())
+                }
+                else {
+                    const context = vm.Canvas.getContext('2d');
+                    context.clearRect(0, 0, vm.Canvas.width, vm.Canvas.height);
+                    setTimeout(() => vm.onPlay())
+                }
+            },
+
+
+            getFace: async function () {
+                console.log('getface')
+                $.ajax({
+                    url: "http://localhost:58844/api/Basic" + "/GetEmpImgDetectFace",
+                    type: "GET",
+                    success: function (datas) {
+                        vm.ImageMap = [];
+                        var fil = JSON.parse(datas.Data);
+                        var temp = [];
+                        temp = fil;
+
+                        for (var ob of temp) {
+                            var str = JSON.parse(ob);
+                            for (var flo of str) {
+                                var desc = [];
+                                for (var des of flo.descriptors) {
+                                    var d = new Float32Array(des)
+                                    desc.push(d);
+                                }
+                                vm.ImageMap.push(new faceapi.LabeledFaceDescriptors(flo.label, desc))
+                            }
+                        }
+                        vm.onPlay();
+                    },
+                    error: function (msg) {
+
+                    }
+                });
+                //const canvas = document.getElementById('canvas')
+                //const canvas1 = document.getElementById('test')
+                //const myImage = document.getElementById('myImage')
+
+                //const context = canvas1.getContext('2d');
+                //context.clearRect(0, 0, canvas1.width, canvas1.height);
+                //const testFolder = './img';
+                //const fs = require('fs');
+                //var labels = [];
+
+                //fs.readdirSync(testFolder).forEach(file => {
+                //  // var newStr =  file.replace('.jpg', '');
+                //    labels.push(file)
+                //});
+
+                // const labels = ['test']
+                //const labeledFaceDescriptors = await Promise.all(
+                //    labels.map(async label => {
+                //        // fetch image data from urls and convert blob to HTMLImage element
+                //        //const imgUrl = `${label}.jpg`
+                //        const img = await faceapi.fetchImage('../img/' + label)
+
+                //        // detect the face with the highest score in the image and compute it's landmarks and face descriptor
+                //        const fullFaceDescription = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(true).withFaceDescriptor()
+
+                //        if (!fullFaceDescription) {
+                //            return;
+                //        }
+
+                //        const faceDescriptors = [fullFaceDescription.descriptor]
+                //        return new faceapi.LabeledFaceDescriptors(label.replace('.jpg', ''), faceDescriptors)
+                //    })
+                //)
+
+                //var filtered = labeledFaceDescriptors.filter(function (el) {
+                //    return el != null && el != undefined;
+                //});
+                //vm.ImageMap = filtered;
+
+                //console.log(vm.ImageMap)
+
+
+                //const results = await faceapi
+                //    .detectAllFaces(myImage)
+                //    .withFaceLandmarks()
+                //    .withFaceDescriptors()
+
+                //if (!results.length) {
+                //    return
+                //}
+
+                //// create FaceMatcher with automatically assigned labels
+                //// from the detection results for the reference image
+                //const faceMatcher = new faceapi.FaceMatcher(results)
+
+                //const singleResult = await faceapi
+                //    .detectSingleFace(canvas)
+                //    .withFaceLandmarks()
+                //    .withFaceDescriptor()
+
+                //if (singleResult) {
+                //    const bestMatch = faceMatcher.findBestMatch(singleResult.descriptor)
+                //    console.log(bestMatch)
+                //}
+
+
+                //const displaySize = { width: 640, height: 480 }
+                //const resizedResults = faceapi.resizeResults(singleResult, displaySize)
+                // draw detections into the canvas
+                //faceapi.draw.drawDetections(canvas1, resizedResults)
+                // draw the landmarks into the canvas
+                //faceapi.draw.drawFaceLandmarks(canvas1, resizedResults)
+
+                ///* Display face landmarks */
+                //const detectionsWithLandmarks = await faceapi
+                //    .detectAllFaces(canvas)
+                //    .withFaceLandmarks()
+
+                //// resize the detected boxes and landmarks in case your displayed image has a different size than the original
+                //const displaySize = { width: canvas1.width, height: canvas1.height }
+
+                //const resizedResults = faceapi.resizeResults(detectionsWithLandmarks, displaySize)
+                //// draw detections into the canvas
+                //faceapi.draw.drawDetections(canvas1, resizedResults)
+                //// draw the landmarks into the canvas
+                //faceapi.draw.drawFaceLandmarks(canvas1, resizedResults)
+            },
 
             closeNotification: function () {
                 vm.notification = false;
@@ -273,9 +535,20 @@ function vmStart() {
                 });
             },
             takePicture: function (ob, resultOb) {
-                var canvas = document.getElementById('canvas');
-                var ctx = canvas.getContext('2d');
+
+                //var canvas = document.getElementById('canvas');
+                //var ctx = canvas.getContext('2d');
+                //var url = canvas.toDataURL('images/jpeg');
+
+                var canvas = document.createElement("canvas");
+                canvas.width = vm.Video.videoWidth;
+                canvas.height = vm.Video.videoHeight;
+                canvas.getContext('2d')
+                    .drawImage(vm.Video, 0, 0, canvas.width, canvas.height);
                 var url = canvas.toDataURL('images/jpeg');
+
+
+
                 if (vm.ClockStatus == 1) {
                     vm.voiceStart(resultOb.emp_name + "早安啦");
                     vm.SuccessMsgStr = resultOb.emp_name + " : 上班打卡成功";
@@ -550,6 +823,67 @@ function vmStart() {
                     data: { value: ob },
                     dataType: "json",
                     success: function (datas) {
+                        vm.keyinEmpSn = "";
+                        vm.SuccessMsg = true;
+                        vm.nowPic = "";
+                        clearTimeout(setTimeOut);
+                        var result = datas.Data;
+                        if (result.emp_name != "無登記") {
+                            console.log(vm.count)
+                            vm.takePicture(ob, result);
+                        }
+                        else {
+                            vm.close("NoData");
+                        }
+                    },
+                    error: function (msg) {
+                        vm.close("Error");
+                    }
+                });
+                return false;
+            },
+
+            addRecordByFace: function (emp_sn) {
+                if (vm.FaceTopName == emp_sn) {
+                    console.log('重複');
+                    return;
+                }
+                console.log('Face ENTER')
+                if (vm.Guid == "") {
+                    alert('沒有guid')
+                    return;
+                }
+             
+                var ca = emp_sn;
+                var ob = {
+                    emp_sn: ca,
+                    clockTime: vm.nowDate + " " + vm.nowTime,
+                    clock_status: vm.ClockStatus,
+                    imageFileLink: "",
+                    token: vm.Guid
+                };
+                if (vm.Ing == true) {
+                    vm.WaitMsg = true;
+                    vm.WaitMsgCount = vm.WaitMsgCount + 1;
+                    return;
+                }
+                vm.Ing = true;
+
+                if (vm.fullscreenLoading == true) {
+                    vm.WaitMsg = true;
+                    vm.WaitMsgCount = vm.WaitMsgCount + 1;
+                    return;
+                }
+                vm.fullscreenLoading = true;
+
+                $.ajax({
+                    url: vm.ClockApiPath + "Clock/AddClockRecordByEmpSn",
+                    // url: "http://localhost:58844/api/" + "Clock/AddClockRecordByEmpSn",
+                    type: "POST",
+                    data: { value: ob },
+                    dataType: "json",
+                    success: function (datas) {
+                        vm.FaceTopName = emp_sn;
                         vm.keyinEmpSn = "";
                         vm.SuccessMsg = true;
                         vm.nowPic = "";
