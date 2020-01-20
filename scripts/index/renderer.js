@@ -77,6 +77,7 @@ function vmStart() {
             FaceCheckName: "",
             FaceTopName: "",
             ViewEmpSn: "",
+            CheckGetFaceOne: false,
         },
         computed: {
             newRecordList: function () {
@@ -169,6 +170,7 @@ function vmStart() {
                 vm.GetCompanyGuid();
                 window.setInterval(function () {
                     vm.GetCompanyGuid();
+                    vm.getFace();
                 }, 1800000);
                 ipcRenderer.send('app_version');
                 ipcRenderer.on('app_version', (event, arg) => {
@@ -329,21 +331,23 @@ function vmStart() {
                         var fil = JSON.parse(datas.Data);
                         var temp = [];
                         temp = fil;
-
                         for (var ob of temp) {
-                            var str = JSON.parse(ob);
+                            var str = JSON.parse(ob.param);
                             for (var flo of str) {
                                 var desc = [];
                                 for (var des of flo.descriptors) {
                                     var d = new Float32Array(des)
                                     desc.push(d);
                                 }
-                                vm.ImageMap.push(new faceapi.LabeledFaceDescriptors(flo.label, desc))
+                                vm.ImageMap.push(new faceapi.LabeledFaceDescriptors(flo.label + '---'+ob.emp_name, desc))
                             }
                         }
-                        window.setTimeout(function () {
-                            vm.onPlay();
-                        }, 5000);
+                        if (vm.CheckGetFaceOne == false) {
+                            window.setTimeout(function () {
+                                vm.onPlay();
+                                vm.CheckGetFaceOne = true;
+                            }, 5000);
+                        }
                     },
                     error: function (msg) {
 
