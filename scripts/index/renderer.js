@@ -322,7 +322,7 @@ function vmStart() {
             getFace: async function () {
                 console.log('getface')
                 $.ajax({
-                    url: "http://localhost:58844/api/Basic" + "/GetEmpImgDetectFace",
+                    url: vm.ClockApiPath+ "/GetEmpImgDetectFace",
                     type: "GET",
                     success: function (datas) {
                         vm.ImageMap = [];
