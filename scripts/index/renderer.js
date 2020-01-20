@@ -343,9 +343,9 @@ function vmStart() {
                             }
                         }
                         if (vm.CheckGetFaceOne == false) {
+                            vm.CheckGetFaceOne = true;
                             window.setTimeout(function () {
                                 vm.onPlay();
-                                vm.CheckGetFaceOne = true;
                             }, 5000);
                         }
                     },
