@@ -76,7 +76,7 @@ function vmStart() {
             FaceCheckCount: 0,
             FaceCheckName: "",
             FaceTopName: "",
-            ViewEmpSn:"",
+            ViewEmpSn: "",
         },
         computed: {
             newRecordList: function () {
@@ -250,10 +250,10 @@ function vmStart() {
                 //if (!vm.ImageMap.length) {
                 //    return
                 //}
-             //   console.log(vm.ImageMap)
+                //   console.log(vm.ImageMap)
                 const faceMatcher = new faceapi.FaceMatcher(vm.ImageMap)
                 const singleResult = await faceapi
-                    .detectSingleFace(vm.Video, new faceapi.TinyFaceDetectorOptions({ inputSize:160}))
+                    .detectSingleFace(vm.Video, new faceapi.TinyFaceDetectorOptions({ inputSize: 160 }))
                     .withFaceLandmarks(true)
                     .withFaceDescriptor()
                 var name;
@@ -292,7 +292,7 @@ function vmStart() {
                         vm.ViewEmpSn = name;
                         //if (vm.FaceCheckName == name) {
                         //    vm.FaceCheckCount++;
-                            
+
                         //    if (vm.FaceCheckCount == 30) {
                         //        vm.addRecordByFace(name);
                         //        vm.FaceCheckCount = 0;
@@ -341,7 +341,9 @@ function vmStart() {
                                 vm.ImageMap.push(new faceapi.LabeledFaceDescriptors(flo.label, desc))
                             }
                         }
-                        vm.onPlay();
+                        window.setTimeout(function () {
+                            vm.onPlay();
+                        }, 5000);
                     },
                     error: function (msg) {
 
@@ -853,7 +855,7 @@ function vmStart() {
                     alert('¨S¦³guid')
                     return;
                 }
-             
+
                 var ca = emp_sn;
                 var ob = {
                     emp_sn: ca,
