@@ -687,7 +687,7 @@ function vmStart() {
                         vm.changeStatus(2);
                     }
                     if (event.keyCode == 13) {
-                        if (vm.ViewEmpSn != '') {
+                        if (vm.ViewEmpSn != '' && vm.carrier == '' ) {
                             var sn = vm.ViewEmpSn.split('---')[0];
                             vm.addRecordByFace(sn);
                         }
