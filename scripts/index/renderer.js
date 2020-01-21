@@ -306,20 +306,20 @@ function vmStart() {
                         //}
                     }
                     else {
+                        vm.ViewEmpSn = '';
                         const context = vm.Canvas.getContext('2d');
                         context.clearRect(0, 0, vm.Canvas.width, vm.Canvas.height);
-                        vm.ViewEmpSn = '';
                     }
 
                     setTimeout(() => vm.onPlay())
                 }
                 else {
+                    vm.ViewEmpSn = '';
                     const context = vm.Canvas.getContext('2d');
                     context.clearRect(0, 0, vm.Canvas.width, vm.Canvas.height);
                     setTimeout(() => vm.onPlay())
                 }
             },
-
 
             getFace: async function () {
                 console.log('getface')
@@ -339,7 +339,7 @@ function vmStart() {
                                     var d = new Float32Array(des)
                                     desc.push(d);
                                 }
-                                vm.ImageMap.push(new faceapi.LabeledFaceDescriptors(flo.label + '---'+ob.emp_name, desc))
+                                vm.ImageMap.push(new faceapi.LabeledFaceDescriptors(flo.label + '---' + ob.emp_name, desc))
                             }
                         }
                         if (vm.CheckGetFaceOne == false) {
@@ -654,7 +654,8 @@ function vmStart() {
                 }
             },
             changeStatus: function (i) {
-                //$("#cerrier").focus();
+                vm.ViewEmpSn = '';
+                vm.FaceTopName = '';
                 vm.ClockStatus = i;
                 if (i == 1) {
                     vm.BtnStyle1 = "display:inline-block; width:30%;height:100%;border:inset;border-color:red;border-width:10px;";
@@ -678,15 +679,21 @@ function vmStart() {
                         $("#cerrier").focus();
                     }
                 }) // 點擊之後印出
-                //element.addEventListener('keypress', function (event) {
-                //    if (event.keyCode == 13) {
-                //        if (event.path[0].id != "cerrier") {
-                //            event.preventDefault();
-                //        }
-                //        else {
-                //        }
-                //    }
-                //});
+                element.addEventListener('keydown', function (event) {
+                    if (event.keyCode == 112) {
+                        vm.changeStatus(1);
+                    }
+                    if (event.keyCode == 113) {
+                        vm.changeStatus(2);
+                    }
+                    if (event.keyCode == 13) {
+                        if (vm.ViewEmpSn != '') {
+                            var sn = vm.ViewEmpSn.split('---')[0];
+                            vm.addRecordByFace(sn);
+                        }
+                    }
+
+                });
                 dateSetTimeOut = window.setInterval(function () {
                     var now = new Date();//生成日期物件(完整的日期資訊)
                     var y = now.getFullYear();//年份
