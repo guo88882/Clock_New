@@ -17,7 +17,7 @@ var vm;
 var setTimeOut;
 var dateSetTimeOut;
 var uploadSetTimeOut;
-
+var faceMatcher;
 function vmStart() {
 
     vm = new Vue({
@@ -114,6 +114,7 @@ function vmStart() {
                 }
                 if (now >= Date.parse(changeStatusDDS).valueOf() && now <= Date.parse(changeStatusDDD).valueOf()) {
                     vm.changeStatus(2);
+                    vm.getFace();
                 }
             },
             "SuccessCount": function () {
@@ -170,8 +171,8 @@ function vmStart() {
                 vm.GetCompanyGuid();
                 window.setInterval(function () {
                     vm.GetCompanyGuid();
-                    vm.getFace();
                 }, 1800000);
+
                 ipcRenderer.send('app_version');
                 ipcRenderer.on('app_version', (event, arg) => {
                     ipcRenderer.removeAllListeners('app_version');
@@ -253,7 +254,6 @@ function vmStart() {
                 //    return
                 //}
                 //   console.log(vm.ImageMap)
-                const faceMatcher = new faceapi.FaceMatcher(vm.ImageMap)
                 const singleResult = await faceapi
                     .detectSingleFace(vm.Video, new faceapi.TinyFaceDetectorOptions({ inputSize: 160 }))
                     .withFaceLandmarks(true)
@@ -283,14 +283,17 @@ function vmStart() {
                             label: name + '---' + distance
                         }
 
-                        var x = resizedResults.detection.box.x;
-                        var y = resizedResults.detection.box.y;
-                        var w = resizedResults.detection.box.width;
-                        var h = resizedResults.detection.box.height;
+                        //var x = resizedResults.detection.box.x;
+                        //var y = resizedResults.detection.box.y;
+                        //var w = resizedResults.detection.box.width;
+                        //var h = resizedResults.detection.box.height;
 
-                        const box = { x: x, y: y, width: w, height: h }
+                       // const box = { x: x, y: y, width: w, height: h }
+                        const box = resizedResults.detection.box;
                         const drawBox = new faceapi.draw.DrawBox(box, drawOptions)
-                        drawBox.draw(vm.Canvas, resizedResults)
+                        //drawBox.draw(vm.Canvas, resizedResults)
+                        drawBox.draw(vm.Canvas)
+
                         vm.ViewEmpSn = name;
                         //if (vm.FaceCheckName == name) {
                         //    vm.FaceCheckCount++;
@@ -322,7 +325,6 @@ function vmStart() {
             },
 
             getFace: async function () {
-                console.log('getface')
                 $.ajax({
                     url: vm.ClockApiPath + "Basic/GetEmpImgDetectFace",
                     type: "GET",
@@ -342,6 +344,9 @@ function vmStart() {
                                 vm.ImageMap.push(new faceapi.LabeledFaceDescriptors(flo.label + '---' + ob.emp_name, desc))
                             }
                         }
+                       
+                        faceMatcher = new faceapi.FaceMatcher(vm.ImageMap,0.4)
+                        console.log(faceMatcher);
                         if (vm.CheckGetFaceOne == false) {
                             vm.CheckGetFaceOne = true;
                             window.setTimeout(function () {
