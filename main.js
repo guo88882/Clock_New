@@ -49,7 +49,7 @@ function createWindow() {
     }))
     win.maximize();
 
-    // Menu.setApplicationMenu(null);
+   // Menu.setApplicationMenu(null);
 
     //pathname: path.join(__dirname, 'index.html'),
     // Open the DevTools.

@@ -18,8 +18,8 @@ var setTimeOut;
 var dateSetTimeOut;
 var uploadSetTimeOut;
 var faceMatcher;
+var chageIsPersonSetTimeOut;
 function vmStart() {
-
     vm = new Vue({
         el: "#clock",
         data: {
@@ -49,14 +49,15 @@ function vmStart() {
             nowPic: "",
             nowDate: null,
             nowTime: null,
-            DateStyle: "width:100%;font-size:13vmin;color:forestgreen;margin:5px",
+            DateStyle: "width:100%;font-size:6rem;color:darkseagreen;margin:5px",
+            ClockDateStyle: "width:100%;font-size:2.5rem;color:orange;margin:5px",
             ClockStatus: 1,
             ViewIndexCount: 1,
             UploadFileList: [],
             UploadIng: false,
             count: 1,
-            BtnStyle1: "display:inline-block; width:30%;height:100%;border:inset;border-color:red;border-width:10px;",
-            BtnStyle2: "display:inline-block; width:30%;height:100%;",
+            BtnStyle1: "display:inline-block;color:bisque; background-color:#009688;width:30%;height:100%;border:inset;border-color:#ffe500;border-width:10px;",
+            BtnStyle2: "display:inline-block;color:bisque; background-color:#009688;width:30%;height:100%;",
             //ClockApiPath: "http://localhost:58844/api/",
             RecordList: [],
             ClockApiPath: "https://hr.kingnetsmart.com.tw/Emp_Clock/api/",
@@ -72,12 +73,14 @@ function vmStart() {
             ImageMap: null,
             Video: null,
             Canvas: null,
-            CheckToImg: [],
             FaceCheckCount: 0,
             FaceCheckName: "",
             FaceTopName: "",
             ViewEmpSn: "",
             CheckGetFaceOne: false,
+            IsPerson: false,
+            DownBackSpace: false,
+            hiddenInput:"",
         },
         computed: {
             newRecordList: function () {
@@ -85,8 +88,17 @@ function vmStart() {
             }
         },
         watch: {
-            "CheckToImg": function () {
-
+            "IsPerson": function () {
+                if (vm.IsPerson == true) {
+                    window.setTimeout(function () {
+                        $("#cerrier").focus();
+                    }, 1000);
+                }
+                if (vm.IsPerson == false) {
+                    window.setTimeout(function () {
+                        $("#hiddenInput").focus();
+                    }, 1000);
+                }
             },
             "nowTime": function () {
                 var now = new Date();//生成日期物件(完整的日期資訊)
@@ -103,10 +115,12 @@ function vmStart() {
                 var changeStatusDDD = y + '/' + M + '/' + d + " 16:20:05";
 
                 if (now >= Date.parse(strS).valueOf() && now <= Date.parse(strD).valueOf()) {
-                    vm.DateStyle = "width:100%;font-size:4.5rem;color:orange;margin:5px";
+                    vm.DateStyle = "width:100%;font-size:6.5rem;color:orange;margin:5px";
+                    vm.ClockDateStyle = "width:100%;font-size:2.5rem;color:orange;margin:5px";
                 }
                 else {
-                    vm.DateStyle = "width:100%;font-size:4.5rem;color:forestgreen;margin:5px";
+                    vm.DateStyle = "width:100%;font-size:6.5rem;color:darkseagreen;margin:5px";
+                    vm.ClockDateStyle = "width:100%;font-size:2.5rem;color:darkseagreen;margin:5px";
                 }
 
                 if (now >= Date.parse(changeStatusSDS).valueOf() && now <= Date.parse(changeStatusSDD).valueOf()) {
@@ -120,6 +134,11 @@ function vmStart() {
             "SuccessCount": function () {
                 clearTimeout(uploadSetTimeOut);
                 clearTimeout(setTimeOut);
+
+                clearTimeout(chageIsPersonSetTimeOut);
+                chageIsPersonSetTimeOut = window.setTimeout(function () {
+                    vm.IsPerson = false;
+                }, 10000);
 
                 //if (vm.$refs.clockcard != null) {
                 //    window.setTimeout(function () {
@@ -154,15 +173,28 @@ function vmStart() {
             },
             "WaitMsgCount": function () {
                 vm.carrier = "";
+
+                clearTimeout(chageIsPersonSetTimeOut);
+                chageIsPersonSetTimeOut = window.setTimeout(function () {
+                    vm.IsPerson = false;
+                }, 10000);
+
                 if (vm.WaitMsg == true) {
                     window.setTimeout(function () {
                         vm.WaitMsg = false;
                         // vm.carrier = "";
                     }, 300);
                 }
-            }
+            },
+
         },
         mounted: function () {
+            this.IsPerson = true;
+            clearTimeout(chageIsPersonSetTimeOut);
+            chageIsPersonSetTimeOut = window.setTimeout(function () {
+                vm.IsPerson = false;
+            }, 30000);
+
             this.Video = document.getElementById('inputVideo');
             this.Canvas = document.getElementById('box');
             this.face();
@@ -199,6 +231,34 @@ function vmStart() {
             $("#cerrier").focus();
         },
         methods: {
+            ChangeDiv: function () {
+                vm.IsPerson = true;
+                if (vm.DownBackSpace == false) {
+                    clearTimeout(chageIsPersonSetTimeOut);
+                    chageIsPersonSetTimeOut = window.setTimeout(function () {
+                        vm.IsPerson = false;
+                    }, 10000);
+                }
+                $("#cerrier").focus();
+
+            },
+            openNotification: function () {
+                this.$notify({
+                    title: '',
+                    message: `  <p style='${vm.ClockDateStyle}'>${vm.nowTime}</p><br />
+                    <div>
+                                <label style="width:100%;font-size:1.5rem;color:#347966;margin:5px"><i class="el-icon-warning-outline"> ${vm.RecordList[vm.RecordList.length - 1].SuccessMsgStr} </i></label><br />
+                                <label style="width:100%;font-size:1.5rem;color:#347966;margin:5px"><i class="el-icon-warning-outline"> ${vm.RecordList[vm.RecordList.length - 1].SuccessNowDate} </i></label><br />
+                            </el-form-item>
+                            <el-form-item style="position:relative; display:inline-block; width:70%;">
+                                <img style="display:block; width:100%;margin:2vh" : src="${vm.RecordList[vm.RecordList.length - 1].nowPic}" />
+                                </el-form-item>
+                    </div >
+               `,
+                    dangerouslyUseHTMLString: true,
+                    position: 'bottom-left'
+                });
+            },
             face: async function () {
                 console.log('start');
                 console.log('face')
@@ -261,6 +321,12 @@ function vmStart() {
                 var name;
                 var distance;
                 if (singleResult) {
+                    clearTimeout(chageIsPersonSetTimeOut);
+                    vm.IsPerson = true;
+                    chageIsPersonSetTimeOut = window.setTimeout(function () {
+                        vm.IsPerson = false;
+                    }, 10000);
+
                     const bestMatch = faceMatcher.findBestMatch(singleResult.descriptor)
                     name = bestMatch.label;
                     if (vm.FaceCheckName != name) {
@@ -269,6 +335,7 @@ function vmStart() {
                     else {
                         vm.FaceCheckName = name;
                     }
+
                     distance = bestMatch.distance.toFixed(2);
                     if (parseFloat(distance) <= 0.4) {
                         const displaySize = { width: 640, height: 480 }
@@ -288,11 +355,12 @@ function vmStart() {
                         //var w = resizedResults.detection.box.width;
                         //var h = resizedResults.detection.box.height;
 
-                       // const box = { x: x, y: y, width: w, height: h }
+                        // const box = { x: x, y: y, width: w, height: h }
                         const box = resizedResults.detection.box;
                         const drawBox = new faceapi.draw.DrawBox(box, drawOptions)
                         //drawBox.draw(vm.Canvas, resizedResults)
                         drawBox.draw(vm.Canvas)
+
 
                         vm.ViewEmpSn = name;
                         //if (vm.FaceCheckName == name) {
@@ -309,7 +377,7 @@ function vmStart() {
                         //}
                     }
                     else {
-                        vm.ViewEmpSn = '';
+                        vm.ViewEmpSn = '辨識失敗';
                         const context = vm.Canvas.getContext('2d');
                         context.clearRect(0, 0, vm.Canvas.width, vm.Canvas.height);
                     }
@@ -323,7 +391,6 @@ function vmStart() {
                     setTimeout(() => vm.onPlay())
                 }
             },
-
             getFace: async function () {
                 $.ajax({
                     url: vm.ClockApiPath + "Basic/GetEmpImgDetectFace",
@@ -344,11 +411,13 @@ function vmStart() {
                                 vm.ImageMap.push(new faceapi.LabeledFaceDescriptors(flo.label + '---' + ob.emp_name, desc))
                             }
                         }
-                       
-                        faceMatcher = new faceapi.FaceMatcher(vm.ImageMap,0.4)
+
+                        faceMatcher = new faceapi.FaceMatcher(vm.ImageMap)
                         console.log(faceMatcher);
                         if (vm.CheckGetFaceOne == false) {
                             vm.CheckGetFaceOne = true;
+                            $("#cerrier").focus();
+
                             window.setTimeout(function () {
                                 vm.onPlay();
                             }, 5000);
@@ -478,7 +547,6 @@ function vmStart() {
                     success: function (datas) {
                         var ob = datas.Data;
                         $("#cerrier").focus();
-
                         if (ob.department == 6) {
                             vm.CheckUser = true;
                             vm.GetCompanyGuid();
@@ -487,7 +555,6 @@ function vmStart() {
                             alert("無權限");
                             vm.loginDialog = false;
                         }
-
                     },
                     error: function (msg) {
 
@@ -546,7 +613,6 @@ function vmStart() {
                 });
             },
             takePicture: function (ob, resultOb) {
-
                 //var canvas = document.getElementById('canvas');
                 //var ctx = canvas.getContext('2d');
                 //var url = canvas.toDataURL('images/jpeg');
@@ -557,8 +623,6 @@ function vmStart() {
                 canvas.getContext('2d')
                     .drawImage(vm.Video, 0, 0, canvas.width, canvas.height);
                 var url = canvas.toDataURL('images/jpeg');
-
-
 
                 if (vm.ClockStatus == 1) {
                     vm.voiceStart(resultOb.emp_name + "早安啦");
@@ -572,6 +636,7 @@ function vmStart() {
                         SuccessNowDate: ob.clockTime,
                         nowPic: url
                     });
+                    vm.openNotification();
                 }
                 else {
                     vm.voiceStart(resultOb.emp_name + "再見啦");
@@ -585,6 +650,7 @@ function vmStart() {
                         SuccessNowDate: ob.clockTime,
                         nowPic: url
                     });
+                    vm.openNotification();
                 }
 
                 vm.SuccessCount = vm.SuccessCount + 1;
@@ -624,7 +690,6 @@ function vmStart() {
                     form.append("ClockTime", UploadList[index].ClockTime);
                     form.append("file", UploadList[index].file);
 
-
                     let myFirstPromise = await new Promise((resolve, reject) => {
                         var settings = {
                             "async": true,
@@ -663,12 +728,12 @@ function vmStart() {
                 vm.FaceTopName = '';
                 vm.ClockStatus = i;
                 if (i == 1) {
-                    vm.BtnStyle1 = "display:inline-block; width:30%;height:100%;border:inset;border-color:red;border-width:10px;";
-                    vm.BtnStyle2 = "display:inline-block; width:30%;height:100%;";
+                    vm.BtnStyle1 = "display:inline-block;color:bisque;background-color:#009688; width:30%;height:100%;border:inset;border-color:#ffe500;border-width:10px;";
+                    vm.BtnStyle2 = "display:inline-block;background-color:#009688;  width:30%;height:100%;";
                 }
                 if (i == 2) {
-                    vm.BtnStyle1 = "display:inline-block; width:30%;height:100%;";
-                    vm.BtnStyle2 = "display:inline-block; width:30%;height:100%;border:inset;border-color:red;border-width:10px;";
+                    vm.BtnStyle1 = "display:inline-block; color:bisque;background-color:#009688; width:30%;height:100%;";
+                    vm.BtnStyle2 = "display:inline-block;background-color:#009688;  width:30%;height:100%;border:inset;border-color:#ffe500;border-width:10px;";
                 }
             },
             changeDateChar: function (str) {
@@ -682,22 +747,88 @@ function vmStart() {
                 element.addEventListener('click', function (e) {
                     if (e.path[0].id != "keyinEmpSn") {
                         $("#cerrier").focus();
+                        vm.keyinEmpSn = "";
                     }
                 }) // 點擊之後印出
-                element.addEventListener('keydown', function (event) {
-                    if (event.keyCode == 112) {
+                element.addEventListener('keyup', function (event) {
+                    console.log(event)
+                    // 斜線/
+                    if (event.keyCode == 111) {
                         vm.changeStatus(1);
+                        vm.carrier = "";
+
                     }
-                    if (event.keyCode == 113) {
+                    // *號
+                    if (event.keyCode == 106) {
                         vm.changeStatus(2);
+                        vm.carrier = "";
+
                     }
-                    if (event.keyCode == 13) {
-                        if (vm.ViewEmpSn != '' && vm.carrier == '' ) {
-                            var sn = vm.ViewEmpSn.split('---')[0];
-                            vm.addRecordByFace(sn);
+
+                    // +號
+                    if (event.keyCode == 107) {
+                        if (vm.keyinEmpSn == "") {
+                            vm.carrier = "";
+                            $("#keyinEmpSn").focus();
                         }
                     }
 
+                    ////ST
+                    //if (event.keyCode == 103) {
+                    //    if (vm.keyinEmpSn == "") {
+                    //        vm.carrier = "";
+                    //        $("#keyinEmpSn").focus();
+                    //    }
+                    //}
+                    ////KN
+                    //if (event.keyCode == 105) {
+                    //    if (vm.keyinEmpSn == "") {
+                    //        vm.carrier = "";
+                    //        $("#keyinEmpSn").focus();
+                    //    }
+                    //}
+
+                    //Input內減號-
+                    if (event.code == 'NumpadSubtract' && event.keyCode == 229) {
+                        $("#cerrier").focus();
+                        vm.keyinEmpSn = "";
+                    }
+                    //Input內/
+                    if (event.code == 'NumpadDivide' && event.keyCode == 229) {
+                        $("#cerrier").focus();
+                        vm.keyinEmpSn = "";
+                        vm.changeStatus(1);
+                        //   $("#keyinEmpSn").focus();
+                    }
+                    //Input內*
+                    if (event.code == 'NumpadMultiply' && event.keyCode == 229) {
+                        $("#cerrier").focus();
+                        vm.keyinEmpSn = "";
+                        vm.changeStatus(2);
+                        //  $("#keyinEmpSn").focus();
+                    }
+
+                    if (event.keyCode == 8) {
+                        if (vm.IsPerson == false) {
+                            vm.DownBackSpace = true;
+                            vm.ChangeDiv();
+                        }
+                    }
+
+                    //if (event.keyCode == 112) {
+                    //    vm.changeStatus(1);
+                    //}
+                    //if (event.keyCode == 113) {
+                    //    vm.changeStatus(2);
+                    //}
+                    if (event.keyCode == 13) {
+                        if (vm.ViewEmpSn != '' && vm.carrier == '' && vm.keyinEmpSn == '') {
+                            if (vm.LengthError == false && event.path.length != 10 && vm.Ing == false) {
+                                var sn = vm.ViewEmpSn.split('---')[0];
+                                vm.addRecordByFace(sn);
+                            }
+                        }
+                    }
                 });
                 dateSetTimeOut = window.setInterval(function () {
                     var now = new Date();//生成日期物件(完整的日期資訊)
@@ -801,6 +932,22 @@ function vmStart() {
                     alert('沒有guid')
                     return;
                 }
+                var snTitle = "";
+                var title = vm.keyinEmpSn.substring(0, 1);
+                if (title == "7") {
+                    snTitle = "ST";
+                }
+                else if (title == "9") {
+                    snTitle = "KN";
+                }
+                else {
+                    alert('開頭錯誤，(7=ST,9=KN)')
+                    vm.keyinEmpSn = "";
+                    return;
+                }
+                var empsn = "";
+                vm.keyinEmpSn = snTitle + vm.keyinEmpSn.substring(1, 8);
+
                 if (vm.keyinEmpSn.length != 9) {
                     vm.keyinEmpSn = "";
                     vm.LengthError = true;
@@ -895,7 +1042,7 @@ function vmStart() {
                 vm.fullscreenLoading = true;
 
                 $.ajax({
-                    url: vm.ClockApiPath + "Clock/AddClockRecordByEmpSn",
+                    url: vm.ClockApiPath + "Clock/AddClockRecordByFace",
                     // url: "http://localhost:58844/api/" + "Clock/AddClockRecordByEmpSn",
                     type: "POST",
                     data: { value: ob },
@@ -964,9 +1111,6 @@ function vmStart() {
                     vm.fullscreenLoading = false;
                 }
             },
-
-
-
         }
     });
 }

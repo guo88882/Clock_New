@@ -1,11 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\OutApp",
     "\\scripts",
     "\\scripts\\index",
     "\\view"
   ],
-  "SelectedNode": "\\scripts",
+  "SelectedNode": "\\view\\index.html",
   "PreviewInSolutionExplorer": false
 }
