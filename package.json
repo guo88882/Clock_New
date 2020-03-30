@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "productName": "打卡介面",
-  "version": "1.0.68",
+  "version": "1.0.70",
   "main": "main.js",
   "email": "guo88882@gmail.com",
   "author": "GJS <guo88882@gmail.com>",
@@ -15,7 +15,10 @@
     "deploy": "electron-builder build --win --publish always",
     "deploy_linux": "electron-builder build --linux --win --publish always"
   },
- 
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guo88882/Clock_New.git"
+  },
   "devDependencies": {
     "electron": "^6.0.12",
     "electron-builder": "^21.2.0",
@@ -32,12 +35,6 @@
     "win": {
       "target": [
         "nsis"
-      ],
-      "publish": [
-        {
-          "provider": "generic",
-          "url": "https://kingnetrd.visualstudio.com/HR_Clock_Win/_git/HR_Clock_Win"
-        }
       ]
     },
     "linux": {
