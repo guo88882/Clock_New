@@ -197,8 +197,12 @@ function vmStart() {
 
             this.Video = document.getElementById('inputVideo');
             this.Canvas = document.getElementById('box');
+
+
+
             this.face();
             this.newDate();
+  
             this.$nextTick(function () {
                 vm.GetCompanyGuid();
                 window.setInterval(function () {
@@ -270,9 +274,10 @@ function vmStart() {
                 await faceapi.nets.faceLandmark68Net.loadFromUri('../node_modules/face-api.js/weights')
                 console.log('ok');
                 //this.onPlay();
-                const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1500, height:200 } })
                 //const videoEl = $('#inputVideo').get(0)
-                vm.Video.srcObject = stream
+                
+                vm.Video.srcObject = stream;
                 await vm.getFace();
                 //faceapi.SsdMobilenetv1Options.minConfidence = 0.4;
 
@@ -338,7 +343,7 @@ function vmStart() {
 
                     distance = bestMatch.distance.toFixed(2);
                     if (parseFloat(distance) <= 0.4) {
-                        const displaySize = { width: 640, height: 480 }
+                        const displaySize = { width: 1000, height: 480 }
                         const resizedResults = faceapi.resizeResults(singleResult, displaySize)
 
                         const dims = faceapi.matchDimensions(vm.Canvas, vm.Video, true)
