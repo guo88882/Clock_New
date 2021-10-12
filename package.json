@@ -20,7 +20,7 @@
     "url": "https://github.com/guo88882/Clock_New.git"
   },
   "devDependencies": {
-    "electron": "^6.0.12",
+    "electron": "^11.5.0",
     "electron-builder": "^21.2.0",
     "electron-packager": "^14.1.0"
   },
